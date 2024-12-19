@@ -2,20 +2,110 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image: url(/abstract-5719221.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+}
+
+/*Below is the CSS which I migrated from the original itunes-search-app */
+
+/* General reset to remove any default margins/paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure the full viewport height is utilized */
+html,
+body {
+  height: 100%;
+}
+
+/* Root container with flex layout */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content should grow and take up available space */
+.App {
+  flex: 1; /* Ensures this section expands to fill available space */
+}
+
+/* Footer styling */
+.footer {
+  margin-top: auto; /* Pushes footer to the bottom */
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  opacity: 85%;
+}
+
+/*Css for the Search Box */
+
+.searchBox {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
+  justify-content: center;
+  gap: 1rem; /* Adds spacing between items */
+  margin-bottom: 1rem;
+  height: 30%;
+  border: 1px white solid;
+  border-radius: 5px;
+}
+
+.searchBox-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Inputs and labels align horizontally by default */
+.searchBox-item label {
+  margin-right: 0.5rem;
+}
+
+.searchBox-item input,
+.searchBox-item select {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.resultsFoundBox {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.songButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/*Below code is for Cards that contain the array items from the iTunes Api */
+/* Add padding and shadow for consistent styling */
+.song-card {
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 15px;
+  background: #222; /* Same card background */
+  color: #fff;
+}
+
+/* Prevent card content from overflowing */
+.song-card h4 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-card img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }

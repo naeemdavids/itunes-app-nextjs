@@ -1,101 +1,95 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+//import "./App.css";
+import Header from "./components/Header";
+import SearchBox from "./components/SearchBox";
+import HomePage from "./components/HomePage";
+import SongPreview from "./components/SongPreview";
+import FavoritesPage from "./components/FavoritesPage";
+import FavoritesPreview from "./components/FavoritesPreview";
+import Footer from "./components/Footer";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [songs, setSongs] = useState([]); //Stores the results from the api in the state.
+  const [count, setCount] = useState(0); //State for How much items where found.
+  const [update, setUpdate] = useState([]); //State for re-rendering the Songs List after the user puts something in the search bar and presses enter.
+  let resultsGet;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  //Makes sure that the data is always updated in the homepage/searchpage.
+  useEffect(() => {
+    getData();
+  }, [update]);
+
+  //Function for getting the data from the API on load and storing it in the state.
+  const getData = () => {
+    //Default Values.
+    let term = "batman";
+    let entity = "movie";
+    let limit = 20;
+
+    fetch(
+      `https://itunes.apple.com/search?term=${term}&entity=${entity}&limit=${limit}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setCount(data.resultCount);
+        setSongs(data.results);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  //Function that gets the information typed in the search bar and sends it to the API when the user presses the search button.
+  const searchSong = async (params) => {
+    let { term, entity, limit } = params;
+
+    try {
+      const sendData = await fetch(
+        `https://itunes.apple.com/search?term=${term}&entity=${entity}&limit=${limit}`
+      )
+        .then((res) => res.json())
+        .then((results) => {
+          resultsGet = results;
+          setCount(resultsGet.resultCount);
+          setSongs(resultsGet.results);
+          console.log(resultsGet, "resutls here");
+        });
+      console.log("Data sent successfully first");
+      // If the Post to the API is successfull, this code tells the state to re-render again.
+      if (sendData.ok) {
+        console.log("Data sent successfully seconed");
+
+        setTimeout(() => {
+          setUpdate(resultsGet); //Update the page.
+        }, 2000);
+      } else {
+        console.log("Failed to send data:", sendData.statusText);
+      }
+    } catch (err) {
+      console.log("Error:", err.message);
+    }
+  };
+
+  return (
+    <div id="root">
+      <div className="App container bg-dark bg-opacity-75">
+        <Header />
+        <SearchBox searchSong={searchSong} />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage songs={songs} count={count} />}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <Route path="/preview" element={<SongPreview />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/favoritesPreview" element={<FavoritesPreview />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+      <Footer />
     </div>
   );
 }
