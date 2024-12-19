@@ -6,9 +6,11 @@ import { Link } from "react-router-dom";
 function FavoritesPage() {
   const [favorites, setFavorites] = useState([]); // Data from sessionStorage is stored in state.
 
-  // Ensures that the Favorites page is always updated.
+  // Ensures that the Favorites page is always updated only on the client side.
   useEffect(() => {
-    getData();
+    if (typeof window !== "undefined") {
+      getData();
+    }
   }, []); // Run only once on component mount
 
   // This function receives the data from sessionStorage, and stores it in the state.
@@ -26,7 +28,9 @@ function FavoritesPage() {
     );
 
     // Update sessionStorage and state.
-    sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    }
     setFavorites(updatedFavorites);
   };
 

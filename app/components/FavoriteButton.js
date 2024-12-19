@@ -5,13 +5,15 @@ import React, { useEffect, useState } from "react";
 function FavoriteButton(props) {
   const [favoritesScan, setFavoritesScan] = useState([]); // State to track favorites.
 
-  // Load favorites from sessionStorage when the component mounts.
+  // Load favorites from sessionStorage only on the client side.
   useEffect(() => {
-    const storedFavorites = sessionStorage.getItem("favorites");
-    if (storedFavorites) {
-      setFavoritesScan(JSON.parse(storedFavorites));
+    if (typeof window !== "undefined") {
+      const storedFavorites = sessionStorage.getItem("favorites");
+      if (storedFavorites) {
+        setFavoritesScan(JSON.parse(storedFavorites));
+      }
     }
-  }, []);
+  }, []); // Run only once on component mount
 
   const {
     trackName,
@@ -45,7 +47,9 @@ function FavoriteButton(props) {
       setFavoritesScan(updatedFavorites);
 
       // Update sessionStorage.
-      sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      }
 
       console.log("New Favorite Added");
       alert(`${favorite.trackName} has been added to your Favorites List`);
