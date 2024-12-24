@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import FavoritesPreview from "./FavoritesPreview";
 import Header from "../components/Header";

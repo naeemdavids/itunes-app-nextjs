@@ -1,3 +1,4 @@
+"use client";
 import SongPreview from "./SongPreview";
 import React from "react";
 import Header from "../components/Header";
