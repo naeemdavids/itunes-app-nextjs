@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import FavoriteButton from "../components/FavoriteButton";
 
@@ -14,6 +14,16 @@ function SongPreview() {
     previewUrl: searchParams.get("previewUrl"),
     kind: searchParams.get("kind"),
   };
+
+  if (!song.trackName || !song.artistName) {
+    return (
+      <div className="max-w-4xl mx-auto mt-6 px-4 sm:px-6 lg:px-8 text-center p-3 border border-light rounded">
+        <h1 className="text-white text-2xl md:text-4xl font-bold mb-3">
+          Track details are missing!
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto mt-6 px-4 sm:px-6 lg:px-8 text-center p-3 border border-light rounded">
@@ -71,7 +81,6 @@ function SongPreview() {
         >
           Back to Search List
         </button>
-        {/* Uncomment this section when FavoriteButton is implemented */}
 
         <FavoriteButton
           trackName={song?.trackName}
@@ -84,4 +93,10 @@ function SongPreview() {
   );
 }
 
-export default SongPreview;
+export default function PreviewPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SongPreview />
+    </Suspense>
+  );
+}
