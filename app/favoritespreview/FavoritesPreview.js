@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-function FavoritesPreview() {
+function FavoritesPreviewContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -14,7 +14,6 @@ function FavoritesPreview() {
     previewUrl: searchParams.get("previewUrl") || "#",
   };
 
-  /*
   // Handle missing data gracefully
   if (
     !song.trackName ||
@@ -35,7 +34,6 @@ function FavoritesPreview() {
       </div>
     );
   }
-  */
 
   console.log(song); // Inspect data passed to FavoritesBox
   console.log(searchParams.toString()); // Inspect query parameters
@@ -94,4 +92,10 @@ function FavoritesPreview() {
   );
 }
 
-export default FavoritesPreview;
+export default function FavoritesPreview() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FavoritesPreviewContent />
+    </Suspense>
+  );
+}
