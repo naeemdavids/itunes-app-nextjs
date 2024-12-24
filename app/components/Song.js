@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 // Helper function to update artwork URL size.
 const getLargerArtworkUrl = (url, size = 600) => {
@@ -13,7 +13,18 @@ function Song(props) {
 
   return (
     <div>
-      <Link to="/preview" state={song}>
+      <Link
+        href={{
+          pathname: "/preview",
+          query: {
+            trackName: song.trackName,
+            artistName: song.artistName,
+            artworkUrl100: largerArtworkUrl,
+            previewUrl: song.previewUrl,
+            kind: song.kind,
+          },
+        }}
+      >
         <div
           className="bg-default text-primary my-3 p-3 rounded"
           style={{ border: "solid 1px #CCC", boxShadow: "7px 7px 5px grey" }}

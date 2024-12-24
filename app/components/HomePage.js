@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Song from "./Song";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 function HomePage(props) {
   const [musicList, setMusicList] = useState(props.songs);
@@ -17,7 +17,7 @@ function HomePage(props) {
         <h2 className="text-white border border-light rounded m-1 p-1">
           Results Found: {count}
         </h2>
-        <Link to="/favorites">
+        <Link href="/favorites">
           <button className="btn btn-lg btn-outline-warning">Favorites</button>
         </Link>
       </div>

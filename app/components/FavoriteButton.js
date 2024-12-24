@@ -1,7 +1,7 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 
-// Component for adding an item/track to the favorites list using sessionStorage.
 function FavoriteButton(props) {
   const [favoritesScan, setFavoritesScan] = useState([]); // State to track favorites.
 
@@ -15,14 +15,7 @@ function FavoriteButton(props) {
     }
   }, []); // Run only once on component mount
 
-  const {
-    trackName,
-    artistName,
-    trackPrice,
-    currency,
-    artworkUrl100,
-    previewUrl,
-  } = props;
+  const { trackName, artistName, artworkUrl100, previewUrl } = props;
 
   // Add a track to the favorites list in sessionStorage.
   const addToFav = (e) => {
@@ -31,8 +24,6 @@ function FavoriteButton(props) {
     const favorite = {
       trackName,
       artistName,
-      trackPrice,
-      currency,
       artworkUrl100,
       previewUrl,
     };
@@ -58,7 +49,10 @@ function FavoriteButton(props) {
 
   return (
     <div>
-      <button className="btn btn-md btn-outline-warning" onClick={addToFav}>
+      <button
+        className="px-4 py-2 bg-yellow-500 text-white rounded shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+        onClick={addToFav}
+      >
         Add To Favorites
       </button>
     </div>

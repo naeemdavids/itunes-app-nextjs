@@ -1,21 +1,17 @@
 "use client";
+
 import React from "react";
 
-//This component is for the delete button in the favorites list.
-function FavoritesDelete(props) {
-  const { trackName, onDelete } = props;
+function FavoritesDelete({ trackName, onDelete }) {
+  const handleDelete = (e) => {
+    e.stopPropagation(); // Prevent the click event from bubbling up.
+    e.preventDefault(); // Prevent default behavior, if any.
 
-  const deleteButton = (e) => {
-    e.stopPropagation(); // Prevent the click event from bubbling up to the Link.
-    e.preventDefault(); // Prevent any default behavior of the Link.
-
-    // Check if the code is running on the client side before accessing sessionStorage.
+    // Ensure the code runs only on the client side.
     if (typeof window !== "undefined") {
-      // Get the current favorites from sessionStorage.
       const storedFavorites = sessionStorage.getItem("favorites");
 
       if (storedFavorites) {
-        // Parse the stored favorites into an array.
         const favoritesList = JSON.parse(storedFavorites);
 
         // Filter out the track with the given trackName.
@@ -26,17 +22,22 @@ function FavoritesDelete(props) {
         // Update sessionStorage with the filtered list.
         sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
 
-        // Activate the handleDelete() on the Parent page (FavoritesPage).
+        // Call the parent delete handler.
         onDelete(trackName);
 
         console.log(`${trackName} has been removed from favorites.`);
         alert(`${trackName} has been removed from your Favorites List`);
+      } else {
+        console.log("No favorites found in sessionStorage.");
       }
     }
   };
 
   return (
-    <button className="btn btn-md btn-outline-warning" onClick={deleteButton}>
+    <button
+      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition duration-300"
+      onClick={handleDelete}
+    >
       Delete
     </button>
   );

@@ -16,7 +16,7 @@ function SearchBox(props) {
     }
 
     const params = {
-      term: term,
+      term: term.toLowerCase(), // Ensures the search term is lowercase.
       entity: entity,
       limit: limit,
     };

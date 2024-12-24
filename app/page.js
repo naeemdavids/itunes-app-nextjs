@@ -1,95 +1,96 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import "./App.css";
 import Header from "./components/Header";
 import SearchBox from "./components/SearchBox";
 import HomePage from "./components/HomePage";
-import SongPreview from "./components/SongPreview";
-import FavoritesPage from "./components/FavoritesPage";
-import FavoritesPreview from "./components/FavoritesPreview";
-import Footer from "./components/Footer";
 
 export default function Home() {
-  const [songs, setSongs] = useState([]); //Stores the results from the api in the state.
-  const [count, setCount] = useState(0); //State for How much items where found.
-  const [update, setUpdate] = useState([]); //State for re-rendering the Songs List after the user puts something in the search bar and presses enter.
-  let resultsGet;
+  const [songs, setSongs] = useState([]); // Stores the search results.
+  const [count, setCount] = useState(0); // Tracks the total number of search results.
 
-  //Makes sure that the data is always updated in the homepage/searchpage.
+  // This effect runs on the initial render and when the `update` state changes.
   useEffect(() => {
-    getData();
-  }, [update]);
+    // Check if a previous search exists in localStorage.
+    const storedSearch = localStorage.getItem("lastSearch");
+    if (storedSearch) {
+      // If a previous search exists, parse it and fetch the corresponding data.
+      const { term, entity, limit } = JSON.parse(storedSearch);
+      fetchData(term, entity, limit);
+    } else {
+      // If no previous search exists, fetch the default data (e.g., Batman movies).
+      getData();
+    }
+  }, []);
 
-  //Function for getting the data from the API on load and storing it in the state.
-  const getData = () => {
-    //Default Values.
-    let term = "batman";
-    let entity = "movie";
-    let limit = 20;
-
+  /**
+   * Function to fetch data from the iTunes API with given search parameters.
+   * @param {string} term - The search keyword.
+   * @param {string} entity - The type of media (e.g., song, movie).
+   * @param {number} limit - The maximum number of results to fetch.
+   */
+  const fetchData = (term, entity, limit) => {
     fetch(
       `https://itunes.apple.com/search?term=${term}&entity=${entity}&limit=${limit}`
     )
       .then((res) => res.json())
       .then((data) => {
-        setCount(data.resultCount);
-        setSongs(data.results);
+        setCount(data.resultCount); // Update the count of results.
+        setSongs(data.results); // Update the list of results.
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Error fetching data:", err);
       });
   };
 
-  //Function that gets the information typed in the search bar and sends it to the API when the user presses the search button.
+  /**
+   * Function to fetch default data for the home page (e.g., "Batman movies").
+   */
+  const getData = () => {
+    const term = "batman"; // Default search term.
+    const entity = "movie"; // Default type of media.
+    const limit = 20; // Default number of results.
+    fetchData(term, entity, limit); // Fetch default data.
+  };
+
+  /**
+   * Function triggered when the user searches for a new item.
+   * @param {Object} params - The search parameters entered by the user.
+   */
   const searchSong = async (params) => {
-    let { term, entity, limit } = params;
+    const { term, entity, limit } = params;
 
     try {
-      const sendData = await fetch(
+      const response = await fetch(
         `https://itunes.apple.com/search?term=${term}&entity=${entity}&limit=${limit}`
-      )
-        .then((res) => res.json())
-        .then((results) => {
-          resultsGet = results;
-          setCount(resultsGet.resultCount);
-          setSongs(resultsGet.results);
-          console.log(resultsGet, "resutls here");
-        });
-      console.log("Data sent successfully first");
-      // If the Post to the API is successfull, this code tells the state to re-render again.
-      if (sendData.ok) {
-        console.log("Data sent successfully seconed");
+      );
+      const data = await response.json();
 
-        setTimeout(() => {
-          setUpdate(resultsGet); //Update the page.
-        }, 2000);
-      } else {
-        console.log("Failed to send data:", sendData.statusText);
-      }
+      // Update the state with the new search results.
+      setCount(data.resultCount);
+      setSongs(data.results);
+
+      // Save the search parameters in localStorage for persistence.
+      localStorage.setItem(
+        "lastSearch",
+        JSON.stringify({ term, entity, limit })
+      );
     } catch (err) {
-      console.log("Error:", err.message);
+      console.error("Error fetching search results:", err);
     }
   };
 
   return (
-    <div id="root">
+    <div>
       <div className="App container bg-dark bg-opacity-75">
+        {/* Header component */}
         <Header />
+
+        {/* SearchBox component */}
         <SearchBox searchSong={searchSong} />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={<HomePage songs={songs} count={count} />}
-            />
-            <Route path="/preview" element={<SongPreview />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/favoritesPreview" element={<FavoritesPreview />} />
-          </Routes>
-        </BrowserRouter>
+
+        {/* HomePage component to display the search results */}
+        <HomePage songs={songs} count={count} />
       </div>
-      <Footer />
     </div>
   );
 }
