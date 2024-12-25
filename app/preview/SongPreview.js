@@ -28,11 +28,11 @@ function SongPreview() {
   return (
     <div className="w-full mx-auto mt-6 text-center border border-gray-500 rounded-lg p-6 shadow-lg">
       {/* Title and Artwork Section */}
-      <div className="flex flex-col lg:flex-row items-center gap-8 mb-6 justify-between">
+      <div className="flex flex-col lg:flex-row items-center gap-8 mb-6">
         <div className="flex flex-col items-center text-center lg:text-left">
           {/* Track Name */}
           <h1
-            className="text-white text-2xl md:text-4xl font-bold mb-3"
+            className="text-white font-bold mb-4 text-3xl md:text-5xl shadow-md"
             style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)" }}
           >
             {song.trackName}
@@ -40,7 +40,7 @@ function SongPreview() {
 
           {/* Artist Name */}
           <h2
-            className="text-white text-lg md:text-2xl font-light mb-3"
+            className="text-gray-300 font-light mb-4 text-xl md:text-3xl"
             style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)" }}
           >
             Author: {song.artistName}
