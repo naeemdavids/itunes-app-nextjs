@@ -26,7 +26,7 @@ function SongPreview() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-6 px-4 sm:px-6 lg:px-8 text-center p-3 border border-light rounded">
+    <div className="w-full mx-auto mt-6 text-center border border-gray-500 rounded-lg p-6 shadow-lg">
       {/* Title and Artwork Section */}
       <div className="flex flex-col lg:flex-row items-center gap-8 mb-6 justify-between">
         <div className="flex flex-col items-center text-center lg:text-left">
